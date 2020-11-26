@@ -1,1 +1,1 @@
-from .logged_text import LoggedText
+from .logged_text import LoggedText, Console
