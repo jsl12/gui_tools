@@ -13,7 +13,7 @@ class LoggedText(ScrolledText):
         self.handler = QueueHandler(self.queue)
         self.handler.setFormatter(
             logging.Formatter(
-                fmt=fmt or '%(asctime)s [%(levelname)s] %(module)s: %(message)s',
+                fmt=fmt or '%(asctime)s [%(levelname)5s] %(name)s: %(message)s',
                 datefmt=datefmt or '%H:%M:%S'
             )
         )
@@ -54,6 +54,7 @@ class Console(tk.Toplevel):
         self.withdraw()
         self.output = LoggedText(master=self, width=100)
         self.output.pack(expand=True, fill=tk.BOTH)
+        self.title(f'{self.master.wm_title()} Console')
 
     def destroy(self):
         self.withdraw()
