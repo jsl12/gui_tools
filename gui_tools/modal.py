@@ -20,22 +20,24 @@ class ModalInput(tk.Toplevel):
 
         self.entry = ttk.Entry(master=self, width=width)
 
-        self.entry.pack(expand=True, fill=tk.BOTH,
-                        padx=padding, pady=(padding, 0))
-
         button_frame = ttk.Frame(master=self)
-        button_frame.pack(side=tk.BOTTOM)
 
         self.ok_button = ttk.Button(master=button_frame,
                                     text='OK',
                                     command=lambda: self.destroy(set_val=True))
-        self.ok_button.pack(side=tk.LEFT,
-                            padx=padding, pady=padding)
+        self.ok_button.pack(side=tk.LEFT, padx=(0, int(padding/2)))
         self.cancel_button = ttk.Button(master=button_frame,
                                         text='Cancel',
                                         command=lambda: self.destroy())
         self.cancel_button.pack(side=tk.LEFT,
-                                padx=padding, pady=padding)
+                                padx=(int(padding/2), 0))
+
+        self.entry.pack(side=tk.TOP,
+                        fill=tk.BOTH,
+                        padx=padding, pady=padding)
+        if (frame := self.insert_frame()) is not None:
+            frame.pack(side=tk.TOP)
+        button_frame.pack(side=tk.TOP, padx=padding, pady=padding)
 
         self.set_rel_position(offset)
         self.deiconify()
@@ -59,3 +61,6 @@ class ModalInput(tk.Toplevel):
     def set_rel_position(self, offset):
         self.update_idletasks()
         self.geometry(f'+{self.master.winfo_x() + offset[0]}+{self.master.winfo_y() + offset[1]}')
+
+    def insert_frame(self) -> tk.Frame:
+        pass
