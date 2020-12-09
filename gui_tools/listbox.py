@@ -18,3 +18,7 @@ class ScrolledListbox(tk.Frame):
     @items.setter
     def items(self, val):
         return self.list_var.set(val)
+
+    @property
+    def selection(self):
+        return self.list.get(self.list.curselection()[0])
