@@ -2,6 +2,7 @@ import logging
 import threading
 import tkinter as tk
 from pathlib import Path
+from queue import Queue
 from tkinter import ttk
 
 from PIL import ImageTk, Image
@@ -19,6 +20,7 @@ class ImageFrame(tk.Frame):
 
         self.lock = threading.Lock()
         self.label.bind('<Configure>', self.resize_event)
+        self.monitor_queue()
 
     @property
     def file(self) -> Path:
@@ -48,10 +50,19 @@ class ImageFrame(tk.Frame):
     def resize(self, width, height):
         LOGGER.info(f'Resizing to {width}x{height}')
         with self.lock:
-            resized_img = self.image_original.copy()
+            img = self.image_original.copy()
+        if self.queue.empty():
+            self.queue.put((img, width, height))
 
-        resized_img.thumbnail((width, height), Image.ANTIALIAS)
+    def monitor_queue(self):
+        self.queue = Queue()
+        def loop(q: Queue):
+            while True:
+                img, w, h = q.get()
+                w = int(w * .99)
+                h = int(h * .99)
+                img.thumbnail((w, h), Image.ANTIALIAS)
+                self.label.config(image=ImageTk.PhotoImage(img))
 
-        photo_image = ImageTk.PhotoImage(resized_img)
-        self.label.config(image=photo_image)
-        self.label.image = photo_image
+        self.loop = threading.Thread(target=loop, args=(self.queue, ))
+        self.loop.start()
