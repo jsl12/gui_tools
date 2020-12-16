@@ -62,7 +62,8 @@ class ImageFrame(tk.Frame):
                 w = int(w * .99)
                 h = int(h * .99)
                 img.thumbnail((w, h), Image.ANTIALIAS)
-                self.label.config(image=ImageTk.PhotoImage(img))
+                photo = ImageTk.PhotoImage(img)
+                self.label.config(image=photo)
 
         self.loop = threading.Thread(target=loop, args=(self.queue, ))
         self.loop.start()
